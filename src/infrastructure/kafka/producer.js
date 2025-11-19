@@ -1,5 +1,5 @@
 const { Kafka } = require('kafkajs')
-const ActivityGenerator = require('./ActivityGenerator')
+const ActivityGenerator = require('./activityGenerator')
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
