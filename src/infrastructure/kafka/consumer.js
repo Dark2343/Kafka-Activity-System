@@ -1,4 +1,5 @@
 const { Kafka } = require('kafkajs')
+const ActivityProcessor = require('../../application/ActivityProcessor')
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
@@ -6,18 +7,23 @@ const kafka = new Kafka({
 })
 
 const consumer = kafka.consumer({ groupId: 'user-activity-consumers'})
+const activityProcessor = new ActivityProcessor()
 
-const run = async () => {
+const consumeMessages = async () => {
     await consumer.connect()
-    await consumer.subscribe({topic: 'user-activity', fromBeginning: true})
+    await consumer.subscribe({topic: 'user-activity'})
 
     await consumer.run({
         eachMessage: async ({topic, partition, message}) => {
-            console.log({
-                value: message.value.toString()
-            })
+            try{
+                const rawData = message.value.toString()
+                activityProcessor.processActivity(rawData)          // Send it to get parsed and saved
+            }
+            catch(e){
+                console.error("Error consuming activity: ", e)
+            }
         }
     })
 }
 
-run()
+consumeMessages()
