@@ -1,8 +1,10 @@
 class Activity {
-    constructor(userId, eventType, payload) {
+    constructor(userId, eventType, timestamp) {
+        if(!userId || !eventType || !timestamp){
+            throw new Error("Missing activity data")
+        }
         this.userId =  userId;
         this.eventType = eventType;
-        this.payload = payload;
-        this.processedAt;
+        this.timestamp = timestamp;
     }
 }
