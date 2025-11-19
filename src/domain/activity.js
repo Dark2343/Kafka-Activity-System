@@ -1,5 +1,5 @@
 class Activity {
-    constructor(userId, eventType, timestamp) {
+    constructor({ userId, eventType, timestamp }) {
         if(!userId || !eventType || !timestamp){
             throw new Error("Missing activity data")
         }
@@ -8,3 +8,5 @@ class Activity {
         this.timestamp = timestamp;
     }
 }
+
+module.exports = Activity
