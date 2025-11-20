@@ -17,16 +17,8 @@ class ActivityRepository {
         }
     }
 
-    async getAllLogs({ offset, limit }){
-        return await ActivityModel.find().sort({ timestamp: -1 }).skip(offset).limit(limit)
-    }
-    
-    async getLogsByUser(userId, { offset, limit }){
-        return await ActivityModel.find({ userId: userId }).sort({ timestamp: -1}).skip(offset).limit(limit)
-    }
-    
-    async getLogsByEventType(eventType, { offset, limit }){
-        return await ActivityModel.find({ eventType: eventType }).sort({ timestamp: -1}).skip(offset).limit(limit)
+    async getLogs(filter, { offset, limit }){
+        return await ActivityModel.find(filter).sort({ timestamp: -1 }).skip(offset).limit(limit)
     }
 }
 
