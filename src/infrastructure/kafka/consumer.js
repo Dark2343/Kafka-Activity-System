@@ -2,6 +2,7 @@ const { Kafka } = require('kafkajs')
 const ActivityProcessor = require('../../application/activityProcessor')
 const ActivityRepository = require('../mongoDB/repositories/activityRepository')
 const connectDB = require('../../config/mongo')
+require('dotenv').config({ path: '../../config/.env'});
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
@@ -24,6 +25,7 @@ const consumeMessages = async () => {
             try{
                 const rawData = message.value.toString()
                 activityProcessor.processActivity(rawData)      // Send it to get parsed and saved
+                console.log("Activity saved to MongoDB")
             }
             catch(e){
                 console.error("Error consuming activity: ", e)

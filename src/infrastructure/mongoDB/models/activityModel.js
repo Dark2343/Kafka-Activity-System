@@ -10,5 +10,5 @@ activitySchema.index({ userId: 1 })
 activitySchema.index({ eventType: 1 })
 activitySchema.index({ timestamp: -1 })
 
-const ActivityModel = mongoose.model('Event', activitySchema);
+const ActivityModel = mongoose.model('activity', activitySchema);
 module.exports = ActivityModel

@@ -1,4 +1,4 @@
-const Activity = require('../../domain/Activity')
+const Activity = require('../domain/Activity')
 
 class ActivityProcessor {
     constructor(activityRepository) {
@@ -7,7 +7,7 @@ class ActivityProcessor {
 
     async processActivity(activityRaw) {
         const activityData = JSON.parse(activityRaw)
-        const activity = new Activity(activityData.userId, activityData.eventType, activityData.timestamp)
+        const activity = new Activity({ userId: activityData.userId, eventType: activityData.eventType, timestamp: activityData.timestamp})
         await this.activityRepository.save(activity)
     }
 }
