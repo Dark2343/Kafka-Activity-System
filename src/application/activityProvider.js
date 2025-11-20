@@ -3,16 +3,19 @@ class ActivityProvider {
         this.activityRepository = activityRepository
     }
 
-    async getAllActivities() {
-        return await this.activityRepository.getAllLogs()
+    async getAllActivities({ page = 1, limit = 10 }) {
+        const offset = (page - 1) * limit
+        return await this.activityRepository.getAllLogs({ offset, limit })
     }
-
-    async getUserLogs(userId) {
-        return await this.activityRepository.getLogsByUser(userId)
+    
+    async getUserLogs(userId, { page = 1, limit = 10 }) {
+        const offset = (page - 1) * limit
+        return await this.activityRepository.getLogsByUser(userId, { offset, limit })
     }
-
-    async getEventLogs(eventType) {
-        return await this.activityRepository.getLogsByEventType(eventType)
+    
+    async getEventLogs(eventType, { page = 1, limit = 10 }) {
+        const offset = (page - 1) * limit
+        return await this.activityRepository.getLogsByEventType(eventType, { offset, limit })
     }
 }
 

@@ -10,7 +10,8 @@ const activityProvider = new ActivityProvider(new ActivityRepository())
 
 app.get('/activities', async (req, res) => {
     try{
-        const activities = await activityProvider.getAllActivities()
+        const { page, limit } = req.query
+        const activities = await activityProvider.getAllActivities({ page, limit })
         res.status(200).json(activities)
     } catch(e) {
         res.status(404).json({ error: e.message })
@@ -19,7 +20,8 @@ app.get('/activities', async (req, res) => {
 
 app.get('/activities/user/:userId', async (req, res) => {
     try{
-        const userActivities = await activityProvider.getUserLogs(req.params.userId)
+        const { page, limit } = req.query
+        const userActivities = await activityProvider.getUserLogs(req.params.userId, { page, limit })
         res.status(200).json(userActivities)
     } catch(e) {
         res.status(404).json({ error: e.message })
@@ -28,7 +30,8 @@ app.get('/activities/user/:userId', async (req, res) => {
 
 app.get('/activities/event/:eventType', async (req, res) => {
     try{
-        const eventActivities = await activityProvider.getEventLogs(req.params.eventType)
+        const { page, limit } = req.query
+        const eventActivities = await activityProvider.getEventLogs(req.params.eventType, { page, limit })
         res.status(200).json(eventActivities)
     } catch(e) {
         res.status(404).json({ error: e })

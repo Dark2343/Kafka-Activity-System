@@ -17,16 +17,16 @@ class ActivityRepository {
         }
     }
 
-    async getAllLogs(){
-        return await ActivityModel.find().sort({ timestamp: -1 });
+    async getAllLogs({ offset, limit }){
+        return await ActivityModel.find().sort({ timestamp: -1 }).skip(offset).limit(limit)
     }
     
-    async getLogsByUser(userId){
-        return await ActivityModel.find({ userId: userId }).sort({ timestamp: -1});
+    async getLogsByUser(userId, { offset, limit }){
+        return await ActivityModel.find({ userId: userId }).sort({ timestamp: -1}).skip(offset).limit(limit)
     }
     
-    async getLogsByEventType(eventType){
-        return await ActivityModel.find({ eventType: eventType }).sort({ timestamp: -1});
+    async getLogsByEventType(eventType, { offset, limit }){
+        return await ActivityModel.find({ eventType: eventType }).sort({ timestamp: -1}).skip(offset).limit(limit)
     }
 }
 
