@@ -1,4 +1,4 @@
-const Activity = require('../../domain/Activity')
+const Activity = require('../../domain/activity')
 
 class ActivityGenerator {
     constructor() {}

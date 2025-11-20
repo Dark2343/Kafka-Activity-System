@@ -2,11 +2,11 @@ const { Kafka } = require('kafkajs')
 const ActivityProcessor = require('../../application/activityProcessor')
 const ActivityRepository = require('../mongoDB/repositories/activityRepository')
 const connectDB = require('../../config/mongo')
-require('dotenv').config({ path: '../../config/.env'});
+require('dotenv').config();
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
-    brokers: ['localhost:9092']
+    brokers: ['kafka:9092']
 })
 
 const consumer = kafka.consumer({ groupId: 'user-activity-consumers'})

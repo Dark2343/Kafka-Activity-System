@@ -3,7 +3,7 @@ const app = express()
 const connectDb = require('../../config/mongo')
 const ActivityProvider = require('../../application/activityProvider')
 const ActivityRepository = require('../mongoDB/repositories/activityRepository')
-require('dotenv').config({ path: '../../config/.env'});
+require('dotenv').config()
 
 app.use(express.json())
 const activityProvider = new ActivityProvider(new ActivityRepository())
