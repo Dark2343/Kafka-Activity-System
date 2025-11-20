@@ -14,8 +14,7 @@ const consumer = kafka.consumer({ groupId: 'user-activity-consumers'})
 const consumeMessages = async () => {
     await connectDB()
     
-    const activityRepository = new ActivityRepository()
-    const activityProcessor = new ActivityProcessor(activityRepository)
+    const activityProcessor = new ActivityProcessor(new ActivityRepository())
 
     await consumer.connect()
     await consumer.subscribe({topic: 'user-activity'})
