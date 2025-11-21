@@ -6,7 +6,7 @@ The project is built around **Microservices** and uses an **Event Driven Archite
 - **Producer Service** sends user activities to Kafka.
 - **Consumer Service** listens to Kafka topics and processes activities, then saves them to MongoDB.
 - **API Service** exposes an endpoint for clients to query the system for activities.
-- Finally, **MongoDB** is used to store all processed activities by the consumers.
+- Finally, **MongoDB** is used to store all processed activities by the consumers, with indexing to ensure fast querying and efficient retrieval even as data grows.
 
 ### Data Flow
 1. **Producer** sends user activity.
