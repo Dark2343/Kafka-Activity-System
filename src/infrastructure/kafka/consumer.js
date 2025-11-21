@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
-    brokers: ['kafka:9092']
+    brokers: ['kafka-service:9092']
 })
 
 const consumer = kafka.consumer({ groupId: 'user-activity-consumers'})

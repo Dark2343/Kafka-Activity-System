@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer
+  namespace: eyego
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: producer
+  template:
+    metadata:
+      labels:
+        app: producer
+    spec:
+      containers:
+      - name: producer
+        image: dark2343/producer:latest
+        imagePullPolicy: Always
+        env:
+          - name: KAFKA_BROKER
+            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"

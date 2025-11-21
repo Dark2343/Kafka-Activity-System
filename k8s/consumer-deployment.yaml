@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+  namespace: eyego
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+      - name: consumer
+        image: dark2343/consumer:latest
+        imagePullPolicy: Always
+        env:
+          - name: KAFKA_BROKER
+            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: mongo-uri-secret
+                key: MONGO_URI

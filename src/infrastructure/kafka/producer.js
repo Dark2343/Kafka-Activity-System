@@ -3,7 +3,7 @@ const ActivityGenerator = require('./activityGenerator')
 
 const kafka = new Kafka({
     clientId: 'activity-producer', // Name of my app
-    brokers: ['kafka:9092']
+    brokers: ['kafka-service:9092']
 })
 
 const producer = kafka.producer()

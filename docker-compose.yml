@@ -1,5 +1,5 @@
 services:
-  kafka:
+  kafka-service:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
     environment:
@@ -27,11 +27,11 @@ services:
       context: .
       dockerfile: docker/api/Dockerfile
     env_file:
-      - ./src/config/.env
+      - ./.env
     ports:
       - 5000:5000
     depends_on:
-      kafka:
+      kafka-service:
         condition: service_healthy
         
   
@@ -41,7 +41,7 @@ services:
       context: .
       dockerfile: docker/producer/Dockerfile
     depends_on:
-      kafka:
+      kafka-service:
         condition: service_healthy
     environment:
       - KAFKA_BROKER=kafka:9092
@@ -52,9 +52,9 @@ services:
       context: .
       dockerfile: docker/consumer/Dockerfile
     env_file:
-      - ./src/config/.env
+      - ./.env
     depends_on:
-      kafka:
+      kafka-service:
         condition: service_healthy
     environment:
       - KAFKA_BROKER=kafka:9092
