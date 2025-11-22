@@ -1,4 +1,6 @@
+# Kubernetes Namespace for all services
+# ===========================================
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: eyego
+  name: eyego         # Namespace name

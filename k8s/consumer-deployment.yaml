@@ -1,27 +1,29 @@
+# Deployment for the Kafka consumer service
+# ==========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: consumer
-  namespace: eyego
+  name: consumer                  # Deployment name
+  namespace: eyego                # Namespace where the Deployment will run
 spec:
-  replicas: 1
+  replicas: 1                     # Number of consumer pods to run
   selector:
     matchLabels:
-      app: consumer
-  template:
+      app: consumer               # Select pods with label "app: consumer"
+  template:                       # Pod template
     metadata:
       labels:
-        app: consumer
+        app: consumer             # Label for pods, matches selector
     spec:
       containers:
       - name: consumer
-        image: dark2343/consumer:latest
-        imagePullPolicy: Always
+        image: dark2343/consumer:latest   # Container image for the consumer
+        imagePullPolicy: Always           # Always pull the latest image
         env:
           - name: KAFKA_BROKER
-            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"
+            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"   # Kafka broker address in the cluster
           - name: MONGO_URI
-            valueFrom:
+            valueFrom:                        # Load MongoDB URI from Kubernetes Cluster Secret
               secretKeyRef:
                 name: mongo-uri-secret
                 key: MONGO_URI

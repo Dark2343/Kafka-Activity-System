@@ -1,19 +1,30 @@
+# All of our services in different containers
 services:
+  # Kafka broker service (name is important as we reference it when interacting with this service in the network)
   kafka-service:
+    # We use a Confluent's image as uses KRaft instead of ZooKeeper + it contains all the CLI tools we need 
     image: confluentinc/cp-kafka:7.5.0
+    
+    # Name of the Kafka container (for Docker operations)
     container_name: kafka
+    
+    # Env variables
     environment:
       KAFKA_NODE_ID: 1
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
-      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_PROCESS_ROLES: "broker,controller"    # The node acts as both a broker and controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"    # Address other services use to connect
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1   # Single broker setup
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    
+    # Expose the broker port
     ports:
       - "9092:9092"
+    
+    # Check if Kafka is ready before services that depend on it start
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "9092"]
       interval: 5s
@@ -21,41 +32,54 @@ services:
       retries: 10
       start_period: 15s
     
+  # API Service
   api:
     container_name: api
     build:
       context: .
-      dockerfile: docker/api/Dockerfile
+      dockerfile: docker/api/Dockerfile    # Builds from our Docker image
     env_file:
       - ./.env
+    
+    # Exposes the API port (so that services inside the container can be accessed from outside)
     ports:
-      - 5000:5000
+      - 5000:5000   # host_machine_port:container_port
+
+    # Wait for the Kafka service to be ready before starting
     depends_on:
       kafka-service:
         condition: service_healthy
         
   
+  # Producer Service
   producer:
     container_name: producer
     build:
       context: .
       dockerfile: docker/producer/Dockerfile
+
+    # Wait for the Kafka service to be ready before starting
     depends_on:
       kafka-service:
         condition: service_healthy
     environment:
-      - KAFKA_BROKER=kafka:9092
+      - KAFKA_BROKER=kafka:9092     # Kafka broker address to send messages to
 
+  # Consumer Service
   consumer:
     container_name: consumer
     build:
       context: .
       dockerfile: docker/consumer/Dockerfile
+    
+    # Env file to get 'MONGO_URI' value from
     env_file:
       - ./.env
+
+    # Wait for the Kafka service to be ready before starting
     depends_on:
       kafka-service:
         condition: service_healthy
     environment:
-      - KAFKA_BROKER=kafka:9092
+      - KAFKA_BROKER=kafka:9092     # Kafka broker address to receive messages from
 

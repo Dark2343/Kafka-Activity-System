@@ -1,3 +1,4 @@
+# Files/Folders we don't want Docker to include in our image 
 .env
 node_modules
 docker

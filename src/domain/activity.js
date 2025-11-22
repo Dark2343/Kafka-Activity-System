@@ -1,3 +1,4 @@
+// Our main Activity class that defines what an activity even is
 class Activity {
     constructor({ userId, eventType, timestamp }) {
         if(!userId || !eventType || !timestamp){

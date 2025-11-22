@@ -1,48 +1,51 @@
+# Deployment for the API service
+# ================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
-  namespace: eyego
+  name: api             # Deployment name
+  namespace: eyego      # Namespace where the Deployment will run
 spec:
-  replicas: 1
+  replicas: 1           # Number of pods to run
   selector:
     matchLabels:
-      app: api
-  template:
+      app: api          # Selects pods with label "app: api"
+  template:             # Pod template
     metadata:
-      labels:
+      labels:           # Label for pods, matches selector
         app: api
     spec:
       containers:
         - name: api
-          image: dark2343/api:latest
-          imagePullPolicy: Always
+          image: dark2343/api:latest    # Container image to deploy
+          imagePullPolicy: Always       # Always pull the latest image
           env:
             - name: KAFKA_BROKER
-              value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"
+              value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"   # Kafka broker address in the cluster
             - name: MONGO_URI
-              valueFrom:
+              valueFrom:                        # Load MongoDB URI from Kubernetes Cluster Secret
                 secretKeyRef:
                   name: mongo-uri-secret
                   key: MONGO_URI
           ports:
-            - containerPort: 5000
+            - containerPort: 5000             # Port the container listens on
 
 
 ---
 
-
+# Service to expose the API
+# ================================
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-loadbalancer
+  name: api-loadbalancer        # Service name
   namespace: eyego
 spec:
-  type: LoadBalancer
+  type: LoadBalancer             # Expose service externally via cloud provider LB
   selector:
-    app: api
+    app: api                     # Select pods with label "app: api"
   ports:
-    - port: 80
-      targetPort: 5000
+    - port: 80                   # External port to expose
+      targetPort: 5000           # Forward traffic to containerPort 5000
       protocol: TCP
       name: http

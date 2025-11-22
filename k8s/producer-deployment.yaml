@@ -1,22 +1,24 @@
+# Deployment for the Kafka producer service
+# =========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: producer
-  namespace: eyego
+  name: producer                  # Deployment name
+  namespace: eyego                # Namespace where the Deployment will run
 spec:
-  replicas: 1
+  replicas: 1                     # Number of producer pods to run
   selector:
     matchLabels:
-      app: producer
-  template:
+      app: producer               # Select pods with label "app: producer"
+  template:                       # Pod template
     metadata:
       labels:
-        app: producer
+        app: producer             # Label for pods, matches selector
     spec:
       containers:
       - name: producer
-        image: dark2343/producer:latest
-        imagePullPolicy: Always
+        image: dark2343/producer:latest   # Container image for the producer
+        imagePullPolicy: Always           # Always pull the latest image
         env:
           - name: KAFKA_BROKER
-            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"
+            value: "kafka-0.kafka-service.eyego.svc.cluster.local:9092"  # Kafka broker address in the cluster

@@ -13,7 +13,7 @@ RUN npm install
 # Copy the rest of the code
 COPY ./src ./src
 
-# Expose the port the server is running on
+# Expose the port the server is running on inside Docker
 EXPOSE 5000
 
 # Run the server

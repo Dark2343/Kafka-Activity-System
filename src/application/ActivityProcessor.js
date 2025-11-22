@@ -1,5 +1,9 @@
 const Activity = require('../domain/activity')
 
+// It basically just receives the activity from consumer, then it:
+// - Process the raw data to JSON
+// - Creates and Activity object with this data
+// - Saves it in the repo using the provided ActivityRepository in the constructor
 class ActivityProcessor {
     constructor(activityRepository) {
         this.activityRepository = activityRepository

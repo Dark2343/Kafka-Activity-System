@@ -1,17 +1,19 @@
+# Headless Service for Kafka broker
+# ==================================
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-service
-  namespace: eyego
+  name: kafka-service              # Service name
+  namespace: eyego                 # Namespace where the Service is created
   labels:
-    app: kafka
+    app: kafka                     # Label to identify Kafka pods
 spec:
-  clusterIP: None
+  clusterIP: None                  # Headless service; no cluster IP, used for direct pod DNS
   ports:
-    - port: 9092
+    - port: 9092                   # Kafka PLAINTEXT listener port
       name: plaintext
 
-    - port: 9093
+    - port: 9093                   # Kafka controller listener port (KRaft mode)
       name: controller
   selector:
-    app: kafka
+    app: kafka                     # Routes traffic to pods with label "app: kafka"

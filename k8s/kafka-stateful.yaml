@@ -1,64 +1,66 @@
+# StatefulSet for Kafka broker
+# ============================
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: kafka
-  namespace: eyego
+  name: kafka                     # StatefulSet name
+  namespace: eyego                # Namespace for Kafka resources
 spec:
-  serviceName: kafka-service
-  replicas: 1
+  serviceName: kafka-service      # Headless service used for stable network IDs
+  replicas: 1                     # Number of Kafka broker pods
   selector:
     matchLabels:
-      app: kafka
-  template:
+      app: kafka                  # Matches pods with label "app: kafka"
+  template:                       # Pod template
     metadata:
       labels:
         app: kafka
     spec:
       securityContext:
-        fsGroup: 1000 
+        fsGroup: 1000             # Ensures files are created with a specific group ID
       containers:
         - name: kafka
-          image: confluentinc/cp-kafka:7.5.0
-          imagePullPolicy: IfNotPresent
+          image: confluentinc/cp-kafka:7.5.0   # Kafka image
+          imagePullPolicy: IfNotPresent        # Pull only if image doesn't exist locally
           ports:
             - containerPort: 9092
-              name: plaintext
+              name: plaintext       # Client connection port
             - containerPort: 9093
-              name: controller
+              name: controller      # Controller port for KRaft mode
           env:
             - name: KAFKA_NODE_ID
-              value: "1"
+              value: "1"            # Node ID for this Kafka broker
             - name: CLUSTER_ID
               value: "MkU3OEVBNTcwNTJENDM2Qk=="
             - name: KAFKA_PROCESS_ROLES
-              value: "broker,controller"
+              value: "broker,controller"       # This node acts as both broker and controller
             - name: KAFKA_CONTROLLER_QUORUM_VOTERS
-              value: "1@kafka-0.kafka-service.eyego.svc.cluster.local:9093"
+              value: "1@kafka-0.kafka-service.eyego.svc.cluster.local:9093" # Controller quorum
             - name: KAFKA_LISTENERS
-              value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+              value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093" # Bind ports
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-0.kafka-service.eyego.svc.cluster.local:9092"
+              value: "PLAINTEXT://kafka-0.kafka-service.eyego.svc.cluster.local:9092" # Address clients use
             - name: KAFKA_CONTROLLER_LISTENER_NAMES
               value: "CONTROLLER"
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: "1"
+              value: "1"           # Single broker, no replication
             - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
               value: "0"
             - name: KAFKA_LOG_DIRS
-              value: "/var/lib/kafka/data/kafka-logs"
+              value: "/var/lib/kafka/data/kafka-logs"  # Storage path for logs
           readinessProbe:
             tcpSocket:
-              port: 9092
+              port: 9092           # Checks if Kafka is ready on client port
             initialDelaySeconds: 30
             periodSeconds: 5
           volumeMounts:
             - name: kafka-data
-              mountPath: /var/lib/kafka/data/
+              mountPath: /var/lib/kafka/data/   # Mount persistent volume for logs
   volumeClaimTemplates:
     - metadata:
         name: kafka-data
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: [ "ReadWriteOnce" ]       # Pod can read/write the volume exclusively
         resources:
             requests:
-              storage: 5Gi
+              storage: 5Gi                     # Allocate 5GB for Kafka logs
